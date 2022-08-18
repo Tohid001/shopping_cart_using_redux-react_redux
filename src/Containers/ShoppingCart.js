@@ -2,8 +2,6 @@ import React from "react";
 import { CartItem, Totalitem, TotalPrice } from "../Components";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  decrease_by_one,
-  increase_by_one,
   remove_form_cart,
   set_quantity,
 } from "../redux/shoppingCart/actionCreators.js";
@@ -11,33 +9,31 @@ import {
 function ShoppingCart() {
   const cartItems = useSelector((state) => state.shoppingCart.cartItems);
   const dispatch = useDispatch();
-  const increaseHandler = (id) => {
-    dispatch(increase_by_one(id));
-  };
-  const decreaseHandler = (id) => {
-    dispatch(decrease_by_one(id));
-  };
+
   const setQuantityHandler = (id, quantity) => {
+    console.log("setQuantityHandler called");
     dispatch(set_quantity(id, quantity));
   };
   const removeFromCartHandler = (id) => {
     dispatch(remove_form_cart(id));
   };
-  console.log(cartItems);
+
   return (
-    <div>
-      {cartItems.map((cartItem) => {
-        return (
-          <CartItem
-            key={"kbksdbc"}
-            cartItem={cartItem}
-            increaseHandler={increaseHandler}
-            decreaseHandler={decreaseHandler}
-            setQuantityHandler={setQuantityHandler}
-            removeFromCartHandler={removeFromCartHandler}
-          />
-        );
-      })}
+    <div className="col-span-12 sm:col-span-12 md:col-span-5 lg:col-span-4 xxl:col-span-4">
+      <div className="bg-white py-4 px-4 shadow-md rounded-lg my-4 mx-4">
+        {cartItems.map((cartItem) => {
+          return (
+            <CartItem
+              key={`#${cartItem.id}`}
+              cartItem={cartItem}
+              setQuantityHandler={setQuantityHandler}
+              removeFromCartHandler={removeFromCartHandler}
+            />
+          );
+        })}
+        <Totalitem cartItems={cartItems} />
+      </div>
+      <TotalPrice cartItems={cartItems} />
     </div>
   );
 }

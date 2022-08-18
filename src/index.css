@@ -1,3 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: "Inter", sans-serif;
+  }
+  ol,
+  ul {
+    list-style: none;
+  }
+  a,
+  input {
+    all: unset;
+  }
+
+  body {
+  }
+}
+
+@layer components {
+}
+
+@layer utilities {
+}

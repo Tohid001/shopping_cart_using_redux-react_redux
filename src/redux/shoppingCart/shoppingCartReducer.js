@@ -1,33 +1,18 @@
-import {
-  ADD_TO_CART,
-  REMOVE_FROM_CART,
-  SET_QUANTITY,
-  DECREASE_BY_ONE,
-  INCREASE_BY_ONE,
-} from "./actionTypes.js";
+import { ADD_TO_CART, REMOVE_FROM_CART, SET_QUANTITY } from "./actionTypes.js";
 
 const initialState = {
-  cartItems: [
-    {
-      id: 1,
-      title: "Asus Vivobook X515MA",
-      price: 35500,
-      stock: 20,
-      quantity: 1,
-    },
-  ],
+  cartItems: [],
 };
 
 const shoppingCartReducer = (state = initialState, action) => {
   const { type, payload } = action;
   const { cartItems } = state;
 
-  switch (type) { 
+  switch (type) {
     case ADD_TO_CART:
       const inCart = cartItems.find((cartItem) => {
         return cartItem.id === payload.id;
       });
-      console.log("incart", inCart);
 
       return {
         ...state,
@@ -36,8 +21,11 @@ const shoppingCartReducer = (state = initialState, action) => {
               return cartItem.id === payload.id
                 ? {
                     ...cartItem,
-                    quantity: cartItem.quantity && cartItem.quantity + 1,
-                    stock: cartItem.stock && cartItem.stock - 1,
+                    quantity: cartItem.remainingStock
+                      ? cartItem.quantity + 1
+                      : cartItem.quantity,
+                    remainingStock:
+                      cartItem.remainingStock && cartItem.remainingStock - 1,
                   }
                 : cartItem;
             })
@@ -46,7 +34,7 @@ const shoppingCartReducer = (state = initialState, action) => {
               {
                 ...payload,
                 quantity: 1,
-                stock: payload.stock && payload.stock - 1,
+                remainingStock: payload.stock - 1,
               },
             ],
       };
@@ -62,31 +50,16 @@ const shoppingCartReducer = (state = initialState, action) => {
         ...state,
         cartItems: cartItems.map((cartItem) =>
           cartItem.id === payload.id
-            ? { ...cartItem, quantity: payload.quantity }
-            : cartItem
-        ),
-      };
-    case INCREASE_BY_ONE:
-      console.log("increase");
-      return {
-        ...state,
-        cartItems: cartItems.map((cartItem) =>
-          cartItem.id === payload.id
             ? {
                 ...cartItem,
-                quantity: cartItem.quantity && cartItem.quantity + 1,
-              }
-            : cartItem
-        ),
-      };
-    case DECREASE_BY_ONE:
-      return {
-        ...state,
-        cartItems: cartItems.map((cartItem) =>
-          cartItem.id === payload.id
-            ? {
-                ...cartItem,
-                quantity: cartItem.quantity && cartItem.quantity - 1,
+                quantity:
+                  payload.quantity <= cartItem.stock
+                    ? payload.quantity
+                    : cartItem.quantity,
+                remainingStock:
+                  payload.quantity <= cartItem.stock
+                    ? cartItem.stock - payload.quantity
+                    : cartItem.remainingStock,
               }
             : cartItem
         ),
