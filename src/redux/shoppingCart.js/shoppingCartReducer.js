@@ -2,8 +2,8 @@ import {
   ADD_TO_CART,
   REMOVE_FROM_CART,
   SET_QUANTITY,
-  DECREASE_QUANTITY,
-  INCREASE_QUANTITY,
+  DECREASE_BY_ONE,
+  INCREASE_BY_ONE,
 } from "./actionTypes.js";
 
 const initialState = {
@@ -57,7 +57,7 @@ const shoppingCartReducer = (state = initialState, action) => {
             : cartItem
         ),
       };
-    case INCREASE_QUANTITY:
+    case INCREASE_BY_ONE:
       return {
         ...state,
         cartItems: cartItems.map((cartItem) =>
@@ -66,7 +66,7 @@ const shoppingCartReducer = (state = initialState, action) => {
             : cartItem
         ),
       };
-    case DECREASE_QUANTITY:
+    case DECREASE_BY_ONE:
       return {
         ...state,
         cartItems: cartItems.map((cartItem) =>
