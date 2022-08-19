@@ -2,35 +2,41 @@ import React, { useState, useEffect, useRef } from "react";
 
 function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
   const [quantity, setQuantity] = useState(cartItem.quantity);
-  const inputRef = useRef(null);
-  //debugging
-  // console.log("C.remainingStock", cartItem.remainingStock);
-  // console.log("C.quantity", cartItem.quantity);
-  console.log("I.itemQuantity", quantity);
-  console.log(cartItem.stock <= quantity);
+  // const inputRef = useRef(null);
+
+  // console.log("quantity", quantity);
+  // console.log("inputRef", inputRef.current);
 
   const onChangeHandler = (e) => {
-    console.log("e", e.target.value);
-    e.target.value ||
-      console.log("Checking false value", typeof e.target.value);
-    console.log("it is", typeof e.target.value);
+    // console.log("e.target.value", e.target.value);
 
-    e.target.value ? setQuantity(parseInt(e.target.value)) : setQuantity(0);
+    e.target.value
+      ? parseInt(e.target.value) > cartItem.stock
+        ? setQuantity(quantity)
+        : setQuantity(parseInt(e.target.value))
+      : setQuantity(0);
+    // e.target.value ? setQuantity(parseInt(e.target.value)) : setQuantity(0);
   };
 
   useEffect(() => {
+    // inputRef.current = quantity;
     setQuantity(cartItem.quantity);
   }, [cartItem.quantity]);
   useEffect(() => {
-    setQuantityHandler(cartItem.id, quantity);
+    // if (inputRef.current === quantity) {
+    //   alert(
+    //     `you cann't buy more than ${cartItem.stock} items of ${cartItem.title}`
+    //   );
+    //   inputRef.current = quantity;
+    // }
+    // inputRef.current = quantity;
 
-    // quantity
-    //   ? quantity >= 0 && setQuantityHandler(cartItem.id, quantity)
-    //   : setQuantityHandler(cartItem.id, 0);
-    // quantity >= 0
-    //   ? setQuantityHandler(cartItem.id, quantity)
-    //   : setQuantityHandler(cartItem.id, 0);
-  }, [quantity, cartItem.id]);
+    // inputRef.current === quantity ?{}
+    //   alert(
+    //     `you cann't buy more than ${cartItem.stock} items of ${cartItem.title}`
+    //   );
+    setQuantityHandler(cartItem.id, quantity);
+  }, [quantity]);
 
   return (
     <div className="flex justify-between border-b-2 mb-2">
@@ -40,11 +46,11 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
       <div className="text-lg py-2">
         <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
           <button
-            className={`focus:outline-none   text-white font-bold py-1 px-1 rounded-full inline-flex items-center ${
+            className={`focus:outline-none ${
               quantity === 0
                 ? "bg-gray-500 hover:bg-gray-500"
                 : "bg-purple-700 hover:bg-purple-800"
-            }`}
+            }  text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
               setQuantity((prev) => prev - 1);
             }}
@@ -71,18 +77,18 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
               type="number"
               value={quantity}
               onChange={onChangeHandler}
-              ref={inputRef}
+              // ref={inputRef}
               className="shadow appearance-none  border rounded w-full py-2 px-3 text-gray-700 leading-tight  focus:shadow-outline"
               style={{ width: "100%", border: "none" }}
             />
           </div>
 
           <button
-            className={`focus:outline-none   text-white font-bold py-1 px-1 rounded-full inline-flex items-center ${
-              cartItem.stock <= quantity
+            className={`focus:outline-none ${
+              cartItem.stock == quantity
                 ? "bg-gray-500 hover:bg-gray-500"
                 : "bg-purple-700 hover:bg-purple-800"
-            }`}
+            }  text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
               cartItem.remainingStock && setQuantity((prev) => prev + 1);
             }}
