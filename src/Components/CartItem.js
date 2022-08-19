@@ -1,26 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
-  const [quantity, setQuantity] = useState(cartItem.quantity);
-
-  const onChangeHandler = (e) => {
-    e.target.value
-      ? parseInt(e.target.value) > cartItem.stock
-        ? setQuantity(quantity)
-        : setQuantity(parseInt(e.target.value))
-      : setQuantity(0);
-  };
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    setQuantity(cartItem.quantity);
+    setShowModal(!(cartItem.quantity < cartItem.stock));
   }, [cartItem.quantity]);
 
-  useEffect(() => {
-    setQuantityHandler(cartItem.id, quantity);
-  }, [quantity]);
+  const onChangeHandler = (e) => {
+    setShowModal(parseInt(e.target.value) > cartItem.stock);
+    e.target.value
+      ? parseInt(e.target.value) <= cartItem.stock
+        ? setQuantityHandler(cartItem.id, parseInt(e.target.value))
+        : setQuantityHandler(cartItem.id, cartItem.quantity)
+      : setQuantityHandler(cartItem.id, 0);
+  };
 
   return (
-    <div className="flex justify-between border-b-2 mb-2">
+    <div className="flex justify-between border-b-2 mb-2 flex-wrap">
       <div className="text-lg py-2">
         <p>{cartItem.title}</p>
       </div>
@@ -28,14 +25,14 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
         <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
           <button
             className={`focus:outline-none ${
-              quantity === 0
+              cartItem.quantity === 0
                 ? "bg-gray-500 hover:bg-gray-500"
                 : "bg-purple-700 hover:bg-purple-800"
             }  text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
-              setQuantity((prev) => prev - 1);
+              setQuantityHandler(cartItem.id, cartItem.quantity - 1);
             }}
-            disabled={quantity === 0}
+            disabled={cartItem.quantity === 0}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,9 +53,8 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
           <div className="" style={{ width: "50px", padding: "0px" }}>
             <input
               type="number"
-              value={quantity}
+              value={cartItem.quantity}
               onChange={onChangeHandler}
-              // ref={inputRef}
               className="shadow appearance-none  border rounded w-full py-2 px-3 text-gray-700 leading-tight  focus:shadow-outline"
               style={{ width: "100%", border: "none" }}
             />
@@ -66,14 +62,14 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
 
           <button
             className={`focus:outline-none ${
-              cartItem.stock == quantity
+              cartItem.stock == cartItem.quantity
                 ? "bg-gray-500 hover:bg-gray-500"
                 : "bg-purple-700 hover:bg-purple-800"
             }  text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
-              cartItem.remainingStock && setQuantity((prev) => prev + 1);
+              setQuantityHandler(cartItem.id, cartItem.quantity + 1);
             }}
-            disabled={cartItem.stock <= quantity}
+            disabled={cartItem.stock <= cartItem.quantity}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -100,6 +96,15 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
           </button>
         </div>
       </div>
+      {showModal && (
+        <div className="basis-full bg-orange-100">
+          <span className=" text-xs text-orange-600 dark:text-yellow-500">
+            You can not purchase more than{" "}
+            <span className="font-bold">{cartItem.stock}</span> items of
+            <span className="font-bold"> {cartItem.title}</span>
+          </span>
+        </div>
+      )}
     </div>
   );
 }
