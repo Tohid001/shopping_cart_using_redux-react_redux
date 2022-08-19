@@ -16,9 +16,10 @@ function Product({ product, addToCardHandler }) {
         <div className="text-lg font-semibold">
           <button
             className={`focus:outline-none ${
-              correspondingCartItem?.remainingStock === 0 &&
-              "bg-gray-500 hover:bg-gray-500"
-            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-2 rounded-full inline-flex items-center`}
+              correspondingCartItem?.remainingStock === 0
+                ? "bg-gray-500 hover:bg-gray-500"
+                : "bg-purple-700 hover:bg-purple-800"
+            }  text-white font-bold py-2 px-2 rounded-full inline-flex items-center`}
             onClick={() => {
               addToCardHandler(product);
             }}

@@ -7,6 +7,7 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
   // console.log("C.remainingStock", cartItem.remainingStock);
   // console.log("C.quantity", cartItem.quantity);
   console.log("I.itemQuantity", quantity);
+  console.log(cartItem.stock <= quantity);
 
   const onChangeHandler = (e) => {
     console.log("e", e.target.value);
@@ -19,7 +20,7 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
 
   useEffect(() => {
     setQuantity(cartItem.quantity);
-  });
+  }, [cartItem.quantity]);
   useEffect(() => {
     setQuantityHandler(cartItem.id, quantity);
 
@@ -29,7 +30,7 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
     // quantity >= 0
     //   ? setQuantityHandler(cartItem.id, quantity)
     //   : setQuantityHandler(cartItem.id, 0);
-  }, [quantity]);
+  }, [quantity, cartItem.id]);
 
   return (
     <div className="flex justify-between border-b-2 mb-2">
@@ -39,9 +40,11 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
       <div className="text-lg py-2">
         <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
           <button
-            className={`focus:outline-none ${
-              quantity === 0 && "bg-gray-500 hover:bg-gray-500"
-            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
+            className={`focus:outline-none   text-white font-bold py-1 px-1 rounded-full inline-flex items-center ${
+              quantity === 0
+                ? "bg-gray-500 hover:bg-gray-500"
+                : "bg-purple-700 hover:bg-purple-800"
+            }`}
             onClick={() => {
               setQuantity((prev) => prev - 1);
             }}
@@ -69,26 +72,21 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
               value={quantity}
               onChange={onChangeHandler}
               ref={inputRef}
-              // onBlur={(e) => {
-              //   quantity === 0 || quantity > 0
-              //     ? quantity <= cartItem.stock
-              //       ? setQuantityHandler(cartItem.id, quantity)
-              //       : setQuantity(cartItem.quantity) && alert("!")
-              //     : setQuantity(cartItem.quantity);
-              // }}
               className="shadow appearance-none  border rounded w-full py-2 px-3 text-gray-700 leading-tight  focus:shadow-outline"
               style={{ width: "100%", border: "none" }}
             />
           </div>
 
           <button
-            className={`focus:outline-none ${
-              cartItem.stock == quantity && "bg-gray-500 hover:bg-gray-500"
-            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
+            className={`focus:outline-none   text-white font-bold py-1 px-1 rounded-full inline-flex items-center ${
+              cartItem.stock <= quantity
+                ? "bg-gray-500 hover:bg-gray-500"
+                : "bg-purple-700 hover:bg-purple-800"
+            }`}
             onClick={() => {
               cartItem.remainingStock && setQuantity((prev) => prev + 1);
             }}
-            disabled={cartItem.stock == quantity}
+            disabled={cartItem.stock <= quantity}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
