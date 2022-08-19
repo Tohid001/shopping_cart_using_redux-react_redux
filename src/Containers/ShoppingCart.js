@@ -11,7 +11,7 @@ function ShoppingCart() {
   const dispatch = useDispatch();
 
   const setQuantityHandler = (id, quantity) => {
-    console.log("setQuantityHandler called");
+    // console.log("setQuantityHandler called");
     dispatch(set_quantity(id, quantity));
   };
   const removeFromCartHandler = (id) => {

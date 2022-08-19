@@ -1,6 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 function Product({ product, addToCardHandler }) {
+  const correspondingCartItem = useSelector((state) =>
+    state.shoppingCart.cartItems.find((cartItem) => cartItem.id === product.id)
+  );
+
   return (
     <div className="bg-white py-4 px-4 shadow-md rounded-lg my-4 mx-4">
       <div className="flex justify-between px-4 items-center">
@@ -10,10 +15,16 @@ function Product({ product, addToCardHandler }) {
         </div>
         <div className="text-lg font-semibold">
           <button
-            className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-2 rounded-full inline-flex items-center"
+            className={`focus:outline-none ${
+              correspondingCartItem?.remainingStock === 0 &&
+              "bg-gray-500 hover:bg-gray-500"
+            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-2 px-2 rounded-full inline-flex items-center`}
             onClick={() => {
               addToCardHandler(product);
             }}
+            disabled={
+              correspondingCartItem?.remainingStock === 0 ? true : false
+            }
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

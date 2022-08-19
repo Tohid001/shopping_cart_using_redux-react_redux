@@ -1,25 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
   const [quantity, setQuantity] = useState(cartItem.quantity);
+  const inputRef = useRef(null);
   //debugging
   // console.log("C.remainingStock", cartItem.remainingStock);
   // console.log("C.quantity", cartItem.quantity);
-  // console.log("I.itemQuantity", quantity);
+  console.log("I.itemQuantity", quantity);
 
   const onChangeHandler = (e) => {
     console.log("e", e.target.value);
-    typeof e.target.value === NaN
-      ? setQuantity(e.target.value)
-      : setQuantity(parseInt(e.target.value));
+    e.target.value ||
+      console.log("Checking false value", typeof e.target.value);
+    console.log("it is", typeof e.target.value);
+
+    e.target.value ? setQuantity(parseInt(e.target.value)) : setQuantity(0);
   };
 
   useEffect(() => {
-    quantity >= 0
-      ? quantity <= cartItem.stock
-        ? setQuantityHandler(cartItem.id, quantity)
-        : setQuantity(cartItem.quantity)
-      : setQuantity(parseInt(quantity));
+    setQuantity(cartItem.quantity);
+  });
+  useEffect(() => {
+    setQuantityHandler(cartItem.id, quantity);
+
+    // quantity
+    //   ? quantity >= 0 && setQuantityHandler(cartItem.id, quantity)
+    //   : setQuantityHandler(cartItem.id, 0);
+    // quantity >= 0
+    //   ? setQuantityHandler(cartItem.id, quantity)
+    //   : setQuantityHandler(cartItem.id, 0);
   }, [quantity]);
 
   return (
@@ -59,6 +68,7 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
               type="number"
               value={quantity}
               onChange={onChangeHandler}
+              ref={inputRef}
               // onBlur={(e) => {
               //   quantity === 0 || quantity > 0
               //     ? quantity <= cartItem.stock
@@ -76,7 +86,7 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
               cartItem.stock == quantity && "bg-gray-500 hover:bg-gray-500"
             } bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
-              cartItem.stock && setQuantity((prev) => prev + 1);
+              cartItem.remainingStock && setQuantity((prev) => prev + 1);
             }}
             disabled={cartItem.stock == quantity}
           >
