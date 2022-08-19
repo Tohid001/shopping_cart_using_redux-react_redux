@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
 
 function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
-  //debugging
   const [quantity, setQuantity] = useState(cartItem.quantity);
-  console.log("C.remainingStock", cartItem.remainingStock);
-  console.log("C.quantity", cartItem.quantity);
-  console.log("I.itemQuantity", quantity);
+  //debugging
+  // console.log("C.remainingStock", cartItem.remainingStock);
+  // console.log("C.quantity", cartItem.quantity);
+  // console.log("I.itemQuantity", quantity);
 
   const onChangeHandler = (e) => {
     console.log("e", e.target.value);
-    setQuantity(parseInt(e.target.value));
-    // e.target.value && setQuantityHandler(cartItem.id, e.target.value);
+    typeof e.target.value === NaN
+      ? setQuantity(e.target.value)
+      : setQuantity(parseInt(e.target.value));
   };
 
   useEffect(() => {
-    // quantity && setQuantity(cartItem.id, quantity);
+    quantity >= 0
+      ? quantity <= cartItem.stock
+        ? setQuantityHandler(cartItem.id, quantity)
+        : setQuantity(cartItem.quantity)
+      : setQuantity(parseInt(quantity));
   }, [quantity]);
-
-  useEffect(() => {
-    // setQuantity(cartItem.quantity);
-  }, [cartItem.quantity]);
 
   return (
     <div className="flex justify-between border-b-2 mb-2">
@@ -29,11 +30,13 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
       <div className="text-lg py-2">
         <div className="flex flex-row space-x-2 w-full items-center rounded-lg">
           <button
-            className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
+            className={`focus:outline-none ${
+              quantity === 0 && "bg-gray-500 hover:bg-gray-500"
+            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
-              parseInt(quantity) && setQuantity((prev) => prev - 1);
+              setQuantity((prev) => prev - 1);
             }}
-            disabled={!parseInt(quantity)}
+            disabled={quantity === 0}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -51,25 +54,31 @@ function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
             </svg>
           </button>
 
-          <div className="" style={{ width: "30px" }}>
+          <div className="" style={{ width: "50px", padding: "0px" }}>
             <input
               type="number"
-              value={
-                cartItem.quantity !== quantity ? cartItem.quantity : quantity
-              }
+              value={quantity}
               onChange={onChangeHandler}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              // onBlur={(e) => {
+              //   quantity === 0 || quantity > 0
+              //     ? quantity <= cartItem.stock
+              //       ? setQuantityHandler(cartItem.id, quantity)
+              //       : setQuantity(cartItem.quantity) && alert("!")
+              //     : setQuantity(cartItem.quantity);
+              // }}
+              className="shadow appearance-none  border rounded w-full py-2 px-3 text-gray-700 leading-tight  focus:shadow-outline"
               style={{ width: "100%", border: "none" }}
-              disabled={!cartItem.remainingStock}
             />
           </div>
 
           <button
-            className="focus:outline-none bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center"
+            className={`focus:outline-none ${
+              cartItem.stock == quantity && "bg-gray-500 hover:bg-gray-500"
+            } bg-purple-700 hover:bg-purple-800 text-white font-bold py-1 px-1 rounded-full inline-flex items-center`}
             onClick={() => {
-              cartItem.remainingStock && setQuantity((prev) => prev + 1);
+              cartItem.stock && setQuantity((prev) => prev + 1);
             }}
-            disabled={!cartItem.remainingStock}
+            disabled={cartItem.stock == quantity}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
