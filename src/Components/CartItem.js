@@ -2,39 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 
 function CartItem({ cartItem, removeFromCartHandler, setQuantityHandler }) {
   const [quantity, setQuantity] = useState(cartItem.quantity);
-  // const inputRef = useRef(null);
-
-  // console.log("quantity", quantity);
-  // console.log("inputRef", inputRef.current);
 
   const onChangeHandler = (e) => {
-    // console.log("e.target.value", e.target.value);
-
     e.target.value
       ? parseInt(e.target.value) > cartItem.stock
         ? setQuantity(quantity)
         : setQuantity(parseInt(e.target.value))
       : setQuantity(0);
-    // e.target.value ? setQuantity(parseInt(e.target.value)) : setQuantity(0);
   };
 
   useEffect(() => {
-    // inputRef.current = quantity;
     setQuantity(cartItem.quantity);
   }, [cartItem.quantity]);
-  useEffect(() => {
-    // if (inputRef.current === quantity) {
-    //   alert(
-    //     `you cann't buy more than ${cartItem.stock} items of ${cartItem.title}`
-    //   );
-    //   inputRef.current = quantity;
-    // }
-    // inputRef.current = quantity;
 
-    // inputRef.current === quantity ?{}
-    //   alert(
-    //     `you cann't buy more than ${cartItem.stock} items of ${cartItem.title}`
-    //   );
+  useEffect(() => {
     setQuantityHandler(cartItem.id, quantity);
   }, [quantity]);
 

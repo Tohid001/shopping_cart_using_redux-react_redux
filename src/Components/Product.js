@@ -7,7 +7,11 @@ function Product({ product, addToCardHandler }) {
   );
 
   return (
-    <div className="bg-white py-4 px-4 shadow-md rounded-lg my-4 mx-4">
+    <div
+      className={` ${
+        correspondingCartItem?.remainingStock === 0 ? "bg-gray-500" : "bg-white"
+      }  py-4 px-4 shadow-md rounded-lg my-4 mx-4`}
+    >
       <div className="flex justify-between px-4 items-center">
         <div className="text-lg font-semibold">
           <p>{`${product.title} (${product.stock})`}</p>
